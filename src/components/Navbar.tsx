@@ -27,7 +27,7 @@ export default function Navbar() {
           {t("nav.platforms")}
         </a>
         <a
-          href="https://github.com"
+          href="https://github.com/codedogQBY/iconforge-landing"
           target="_blank"
           rel="noopener noreferrer"
           className="text-[15px] font-medium text-zinc-500 hover:text-zinc-900 transition-colors"

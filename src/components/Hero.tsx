@@ -36,7 +36,7 @@ export default function Hero() {
           <span className="text-base font-semibold text-white">{t("hero.uploadSvg")}</span>
         </a>
         <a
-          href="https://github.com"
+          href="https://github.com/codedogQBY/iconforge-landing"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2.5 px-8 py-4 rounded-[14px] border-[1.5px] border-zinc-200 hover:border-zinc-300 transition-colors"

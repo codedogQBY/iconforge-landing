@@ -47,7 +47,7 @@ export function Footer() {
         </span>
       </div>
       <div className="flex items-center gap-6">
-        <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+        <a href="https://github.com/codedogQBY/iconforge-landing" target="_blank" rel="noopener noreferrer">
           <Github className="w-5 h-5 text-zinc-500 hover:text-zinc-300 transition-colors" />
         </a>
         <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
