@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/icon.svg" alt="IconForge" width="80" height="80" />
+  <img src="./public/icon.svg" alt="IconForge" width="80" height="80" />
 </p>
 
 <h1 align="center">IconForge</h1>
