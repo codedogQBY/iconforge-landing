@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://codedogqby.github.io/iconforge-landing/sitemap.xml
