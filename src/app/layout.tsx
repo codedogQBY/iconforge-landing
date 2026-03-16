@@ -16,9 +16,12 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "IconForge — One SVG. Every Platform Icon.",
+  title: "IconForge — 一个 SVG，生成所有平台图标",
   description:
-    "Upload your SVG logo, customize background color, padding and corners — get production-ready icons for macOS, Windows, iOS, Android, Web and Tauri in one click.",
+    "上传你的 SVG Logo，自定义背景色、内边距和圆角 —— 一键生成 macOS、Windows、iOS、Android、Web 和 Tauri 的生产级图标。",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
@@ -27,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="zh">
       <body className={`${jakarta.variable} ${inter.variable} antialiased`}>
         <I18nProvider>{children}</I18nProvider>
       </body>
