@@ -25,8 +25,9 @@ export interface Platform {
 //
 // 【macOS】
 //   - .iconset 需要 10 张 PNG（16~512 含 @2x）
-//   - macOS 图标本身就带圆角+阴影，但 Apple 建议提交方形图
-//   - 系统自动加圆角遮罩
+//   - macOS 不会像 iOS 那样系统自动裁切圆角
+//   - 开发者需要自己导出带圆角的图标
+//   - 圆角比例约 22.37%（Apple 设计规范）
 //
 // 【Android】
 //   - 自适应图标：108x108dp，前景/背景各一层
@@ -46,10 +47,15 @@ export interface Platform {
 //   - maskable icon: 512（需要安全区 padding）
 //   - 方形无圆角
 //
-// 【Tauri】
-//   - 需要：32x32, 128x128, 128x128@2x(256), icon.png(512)
-//   - Windows 部分：Square*Logo 系列 + StoreLogo
-//   - macOS/Linux 部分通过 icns/ico 生成
+// 【Tauri (macOS)】
+//   - macOS 端：128x128, 128x128@2x(256), icon.png(512)
+//   - macOS 不会自动加圆角，需要自己导出带圆角的图标
+//   - 圆角比例约 22.37%
+//
+// 【Tauri (Windows/Linux)】
+//   - Windows 端：Square*Logo 系列 + StoreLogo
+//   - Linux 端：32x32, 128x128, 256x256, 512x512
+//   - 方形无圆角
 // ============================================================
 
 export const platforms: Platform[] = [
@@ -88,11 +94,11 @@ export const platforms: Platform[] = [
   {
     id: "macos",
     label: "macOS",
-    description: ".iconset PNGs (方形导出，系统加圆角)",
+    description: ".iconset PNGs (导出带圆角)",
     icon: "monitor",
     gradient: ["#10B981", "#059669"],
-    borderRadius: "22.37%", // 模拟 macOS 圆角视觉
-    cornerRadiusRatio: 0, // 导出方形！macOS 系统自动加圆角
+    borderRadius: "22.37%", // macOS 圆角视觉
+    cornerRadiusRatio: 0.2237, // macOS 需要自己导出圆角，系统不会裁切
     specs: [
       { name: "icon_512x512@2x", size: 1024 },
       { name: "icon_512x512", size: 512 },
@@ -112,7 +118,7 @@ export const platforms: Platform[] = [
     description: "自适应图标 (方形导出，系统裁切形状)",
     icon: "tablet-smartphone",
     gradient: ["#14B8A6", "#0D9488"],
-    borderRadius: "22.37%", // Android 常见圆角矩形
+    borderRadius: "50%", // Android Pixel 等主流设备使用圆形遮罩
     cornerRadiusRatio: 0, // 导出方形！系统自适应裁切
     specs: [
       { name: "playstore-icon-512", size: 512 },
@@ -162,11 +168,26 @@ export const platforms: Platform[] = [
     ],
   },
   {
-    id: "tauri",
-    label: "Tauri",
-    description: "跨平台图标集 (32~512 + Store Logo)",
+    id: "tauri-macos",
+    label: "Tauri (macOS)",
+    description: "macOS 端图标 (导出带圆角)",
     icon: "package",
     gradient: ["#EF4444", "#DC2626"],
+    borderRadius: "22.37%",
+    cornerRadiusRatio: 0.2237, // macOS 需要自己导出圆角
+    specs: [
+      { name: "icon", size: 512 },
+      { name: "128x128@2x", size: 256 },
+      { name: "128x128", size: 128 },
+      { name: "32x32", size: 32 },
+    ],
+  },
+  {
+    id: "tauri-winlinux",
+    label: "Tauri (Win/Linux)",
+    description: "Windows/Linux 端图标 + Store Logo (方形)",
+    icon: "package",
+    gradient: ["#F87171", "#EF4444"],
     borderRadius: "0",
     cornerRadiusRatio: 0,
     specs: [

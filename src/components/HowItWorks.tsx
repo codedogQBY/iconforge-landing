@@ -1,37 +1,29 @@
-const steps = [
-  {
-    num: "1",
-    color: "bg-emerald-500",
-    title: "Upload SVG",
-    desc: "Drag and drop your SVG logo or click to browse. We support any valid SVG file.",
-  },
-  {
-    num: "2",
-    color: "bg-teal-500",
-    title: "Customize",
-    desc: "Pick background color, adjust padding, set corner radius. Real-time preview for every platform.",
-  },
-  {
-    num: "3",
-    color: "bg-amber-500",
-    title: "Download ZIP",
-    desc: "One click generates all formats. Download a ZIP organized by platform, ready for your project.",
-  },
+"use client";
+
+import { useI18n } from "@/lib/i18n";
+import type { TransKey } from "@/lib/i18n";
+
+const steps: { num: string; color: string; titleKey: TransKey; descKey: TransKey }[] = [
+  { num: "1", color: "bg-emerald-500", titleKey: "how.step1.title", descKey: "how.step1.desc" },
+  { num: "2", color: "bg-teal-500", titleKey: "how.step2.title", descKey: "how.step2.desc" },
+  { num: "3", color: "bg-amber-500", titleKey: "how.step3.title", descKey: "how.step3.desc" },
 ];
 
 export default function HowItWorks() {
+  const { t } = useI18n();
+
   return (
     <section id="features" className="flex flex-col items-center gap-12 bg-zinc-100 px-[120px] py-20 w-full">
       {/* Header */}
       <div className="flex flex-col items-center gap-3">
         <span className="px-3.5 py-1.5 rounded-full bg-emerald-500/[0.12] text-xs font-semibold text-emerald-500">
-          How it works
+          {t("how.badge")}
         </span>
         <h2 className="text-[40px] font-extrabold text-zinc-900 text-center font-[family-name:var(--font-display)]">
-          Three steps. Zero hassle.
+          {t("how.title")}
         </h2>
         <p className="text-[17px] text-zinc-500 text-center">
-          From SVG to production-ready icons in under 10 seconds.
+          {t("how.subtitle")}
         </p>
       </div>
 
@@ -50,10 +42,10 @@ export default function HowItWorks() {
               </span>
             </div>
             <h3 className="text-xl font-bold text-zinc-900 font-[family-name:var(--font-display)]">
-              {step.title}
+              {t(step.titleKey)}
             </h3>
             <p className="text-[15px] leading-[1.6] text-zinc-500">
-              {step.desc}
+              {t(step.descKey)}
             </p>
           </div>
         ))}

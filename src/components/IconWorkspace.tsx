@@ -14,9 +14,11 @@ import {
   Check,
   Loader2,
   Image as ImageIcon,
+  Code,
 } from "lucide-react";
 import { generatePreview, generateAllAndDownload } from "@/lib/iconGenerator";
 import { platforms } from "@/lib/platforms";
+import { useI18n } from "@/lib/i18n";
 import type { LucideIcon } from "lucide-react";
 
 const platformIcons: Record<string, LucideIcon> = {
@@ -40,6 +42,7 @@ const presetColors = [
 ];
 
 export default function IconWorkspace() {
+  const { t } = useI18n();
   const [svgContent, setSvgContent] = useState<string | null>(null);
   const [svgName, setSvgName] = useState("");
   const [bgColor, setBgColor] = useState("#FFFFFF");
@@ -51,11 +54,13 @@ export default function IconWorkspace() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState({ current: 0, total: 0 });
   const [isDragging, setIsDragging] = useState(false);
+  const [inputMode, setInputMode] = useState<"file" | "code">("file");
+  const [svgCode, setSvgCode] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = useCallback((file: File) => {
     if (!file.name.endsWith(".svg")) {
-      alert("Please upload an SVG file");
+      alert(t("ws.pleaseUploadSvg"));
       return;
     }
     setSvgName(file.name);
@@ -127,7 +132,7 @@ export default function IconWorkspace() {
       );
     } catch (err) {
       console.error(err);
-      alert("Generation failed. Please try again.");
+      alert(t("ws.genFailed"));
     } finally {
       setIsGenerating(false);
     }
@@ -144,38 +149,94 @@ export default function IconWorkspace() {
       <div className="max-w-[1200px] mx-auto">
         {/* Upload Area */}
         {!svgContent ? (
-          <div
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onClick={() => fileInputRef.current?.click()}
-            className={`flex flex-col items-center justify-center gap-4 p-16 rounded-3xl border-2 border-dashed cursor-pointer transition-all ${
-              isDragging
-                ? "border-emerald-500 bg-emerald-500/5"
-                : "border-zinc-300 bg-zinc-50 hover:border-emerald-500 hover:bg-emerald-500/5"
-            }`}
-          >
-            <div className="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center">
-              <Upload className="w-8 h-8 text-emerald-500" />
+          <div className="flex flex-col gap-4">
+            {/* Tab Switch */}
+            <div className="flex gap-1 p-1 bg-zinc-100 rounded-xl w-fit">
+              <button
+                onClick={() => setInputMode("file")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  inputMode === "file"
+                    ? "bg-white text-zinc-900 shadow-sm"
+                    : "text-zinc-500 hover:text-zinc-700"
+                }`}
+              >
+                <Upload className="w-4 h-4" />
+                {t("ws.uploadFile")}
+              </button>
+              <button
+                onClick={() => setInputMode("code")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  inputMode === "code"
+                    ? "bg-white text-zinc-900 shadow-sm"
+                    : "text-zinc-500 hover:text-zinc-700"
+                }`}
+              >
+                <Code className="w-4 h-4" />
+                {t("ws.pasteSvgCode")}
+              </button>
             </div>
-            <div className="text-center">
-              <p className="text-lg font-semibold text-zinc-900">
-                Drop your SVG here or click to browse
-              </p>
-              <p className="text-sm text-zinc-500 mt-1">
-                Supports any valid SVG file
-              </p>
-            </div>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".svg"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) handleFile(file);
-              }}
-            />
+
+            {inputMode === "file" ? (
+              <div
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onClick={() => fileInputRef.current?.click()}
+                className={`flex flex-col items-center justify-center gap-4 p-16 rounded-3xl border-2 border-dashed cursor-pointer transition-all ${
+                  isDragging
+                    ? "border-emerald-500 bg-emerald-500/5"
+                    : "border-zinc-300 bg-zinc-50 hover:border-emerald-500 hover:bg-emerald-500/5"
+                }`}
+              >
+                <div className="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center">
+                  <Upload className="w-8 h-8 text-emerald-500" />
+                </div>
+                <div className="text-center">
+                  <p className="text-lg font-semibold text-zinc-900">
+                    {t("ws.dropHere")}
+                  </p>
+                  <p className="text-sm text-zinc-500 mt-1">
+                    {t("ws.supportsAnySvg")}
+                  </p>
+                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".svg"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleFile(file);
+                  }}
+                />
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                <textarea
+                  value={svgCode}
+                  onChange={(e) => setSvgCode(e.target.value)}
+                  placeholder={t("ws.pasteHint")}
+                  className="w-full h-64 p-4 rounded-2xl border-2 border-zinc-300 bg-zinc-50 font-mono text-sm text-zinc-800 placeholder:text-zinc-400 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all resize-none"
+                  spellCheck={false}
+                />
+                <button
+                  onClick={() => {
+                    const trimmed = svgCode.trim();
+                    if (!trimmed.includes("<svg")) {
+                      alert(t("ws.invalidSvg"));
+                      return;
+                    }
+                    setSvgContent(trimmed);
+                    setSvgName("pasted-svg.svg");
+                  }}
+                  disabled={!svgCode.trim()}
+                  className="self-end flex items-center gap-2 px-6 py-2.5 bg-emerald-500 text-white rounded-xl font-semibold text-sm hover:bg-emerald-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Check className="w-4 h-4" />
+                  {t("ws.useThisSvg")}
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <div className="flex flex-col gap-8">
@@ -209,13 +270,13 @@ export default function IconWorkspace() {
                     <span>
                       {progress.total > 0
                         ? `${progress.current}/${progress.total}`
-                        : "Generating..."}
+                        : t("ws.generating")}
                     </span>
                   </>
                 ) : (
                   <>
                     <Download className="w-4 h-4" />
-                    <span>Download ZIP</span>
+                    <span>{t("ws.downloadZip")}</span>
                   </>
                 )}
               </button>
@@ -228,7 +289,7 @@ export default function IconWorkspace() {
                 {/* Background Color */}
                 <div className="flex flex-col gap-3">
                   <label className="text-sm font-semibold text-zinc-900">
-                    Background Color
+                    {t("ws.bgColor")}
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {presetColors.map((c) => (
@@ -284,7 +345,7 @@ export default function IconWorkspace() {
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-semibold text-zinc-900">
-                      Padding
+                      {t("ws.padding")}
                     </label>
                     <span className="text-sm text-zinc-500 font-mono">
                       {padding}%
@@ -304,7 +365,7 @@ export default function IconWorkspace() {
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-semibold text-zinc-900">
-                      Platforms
+                      {t("ws.platforms")}
                     </label>
                     <button
                       onClick={() =>
@@ -317,8 +378,8 @@ export default function IconWorkspace() {
                       className="text-xs text-emerald-500 font-medium hover:underline"
                     >
                       {selectedPlatforms.length === platforms.length
-                        ? "Deselect All"
-                        : "Select All"}
+                        ? t("ws.deselectAll")
+                        : t("ws.selectAll")}
                     </button>
                   </div>
                   <div className="flex flex-col gap-2">
@@ -353,7 +414,7 @@ export default function IconWorkspace() {
                             {p.label}
                           </span>
                           <span className="text-xs text-zinc-400 ml-auto">
-                            {p.specs.length} sizes
+                            {p.specs.length} {t("ws.sizes")}
                           </span>
                         </button>
                       );
@@ -376,7 +437,7 @@ export default function IconWorkspace() {
                           : "bg-zinc-50 border-zinc-100 opacity-40"
                       }`}
                     >
-                      {/* Checkerboard background to make white/transparent backgrounds visible */}
+                      {/* Preview with platform-specific visual mask (终态效果) */}
                       <div
                         className="relative w-[104px] h-[104px] rounded-xl overflow-hidden flex items-center justify-center"
                         style={{
@@ -392,6 +453,9 @@ export default function IconWorkspace() {
                             src={preview}
                             alt={p.label}
                             className="w-24 h-24 object-contain relative z-10"
+                            style={{
+                              borderRadius: p.borderRadius,
+                            }}
                           />
                         ) : (
                           <div

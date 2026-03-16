@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Image,
   Monitor,
@@ -7,8 +9,16 @@ import {
   Globe,
   Package,
 } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
+import type { LucideIcon } from "lucide-react";
 
-const platforms = [
+const platforms: {
+  icon: LucideIcon;
+  label: string;
+  size: string;
+  gradient: string;
+  radius: string;
+}[] = [
   {
     icon: Monitor,
     label: "macOS",
@@ -54,6 +64,8 @@ const platforms = [
 ];
 
 export default function AppPreview() {
+  const { t } = useI18n();
+
   return (
     <section id="platforms" className="flex justify-center px-20 pb-20 w-full">
       <div className="w-full max-w-[1100px] bg-zinc-100 rounded-3xl border border-zinc-200 p-8 flex flex-col gap-6">
@@ -70,13 +82,13 @@ export default function AppPreview() {
           {/* Settings */}
           <div className="flex items-center gap-3">
             <span className="text-[13px] font-medium text-zinc-500">
-              Background:
+              {t("ap.background")}
             </span>
             <div className="w-6 h-6 rounded-full bg-white border-2 border-emerald-500" />
             <div className="w-6 h-6 rounded-full bg-zinc-900 border border-zinc-300" />
             <div className="w-6 h-6 rounded-full bg-zinc-200 border border-zinc-300" />
             <span className="text-[13px] font-medium text-zinc-500">
-              Padding: 10%
+              {t("ap.padding")}
             </span>
           </div>
         </div>

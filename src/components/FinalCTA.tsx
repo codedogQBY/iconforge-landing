@@ -1,16 +1,21 @@
+"use client";
+
 import { Upload, Hexagon, Github, Twitter, Mail } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 export function FinalCTA() {
+  const { t } = useI18n();
+
   return (
     <section
       id="cta"
       className="flex flex-col items-center gap-6 px-[120px] py-20 w-full bg-gradient-to-b from-emerald-500 to-emerald-600"
     >
       <h2 className="text-[40px] font-extrabold text-white text-center font-[family-name:var(--font-display)]">
-        Ready to forge your icons?
+        {t("cta.title")}
       </h2>
       <p className="text-lg text-white/80 text-center">
-        Free, open source, no sign-up required. Just upload and go.
+        {t("cta.subtitle")}
       </p>
       <a
         href="#workspace"
@@ -18,7 +23,7 @@ export function FinalCTA() {
       >
         <Upload className="w-5 h-5 text-emerald-500" />
         <span className="text-base font-semibold text-emerald-500">
-          Start Now — It&apos;s Free
+          {t("cta.startNow")}
         </span>
       </a>
     </section>
@@ -26,6 +31,8 @@ export function FinalCTA() {
 }
 
 export function Footer() {
+  const { t } = useI18n();
+
   return (
     <footer className="flex items-center justify-between px-20 py-8 w-full bg-zinc-900">
       <div className="flex items-center gap-2.5">
@@ -36,7 +43,7 @@ export function Footer() {
           IconForge
         </span>
         <span className="text-[13px] text-zinc-500">
-          &nbsp;·&nbsp; Open source &amp; free forever
+          &nbsp;·&nbsp; {t("footer.tagline")}
         </span>
       </div>
       <div className="flex items-center gap-6">
